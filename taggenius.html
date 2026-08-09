@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="TagGenius - Free mobile-friendly YouTube Tags Generator">
+<title>TagGenius — YouTube Tags Generator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b1020;color:#f8fafc;min-height:100vh}
+.container{width:min(920px,92%);margin:auto}.hero{text-align:center;padding:42px 0 24px}
+.logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:25px}.logo span{background:#ff1744;padding:7px 11px;border-radius:12px}
+h1{font-size:clamp(30px,7vw,52px);margin:24px 0 10px}.hero p{color:#aab4c8;font-size:17px;margin:0}
+.card{background:#121a2d;border:1px solid #25314a;border-radius:22px;padding:20px;margin:20px 0;box-shadow:0 18px 50px #0004}
+label{display:block;font-weight:700;margin-bottom:9px}.input{width:100%;background:#0c1323;border:1px solid #34415c;color:white;border-radius:14px;padding:15px;font-size:16px;outline:none}.input:focus{border-color:#ff3158}
+.row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.btn{border:0;border-radius:13px;padding:13px 18px;font-size:15px;font-weight:800;cursor:pointer}.primary{background:#ff1744;color:white}.secondary{background:#26334d;color:white}.btn:active{transform:scale(.98)}
+.options{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;color:#b9c4d8;font-size:14px}.options input{accent-color:#ff1744}
+.result-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.result-head h2{font-size:20px;margin:0}.count{color:#9eabc1;font-size:13px}
+.tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.tag{background:#202b43;border:1px solid #33415d;border-radius:999px;padding:8px 11px;color:#e7edf8;font-size:14px}
+.empty{color:#8491a8;text-align:center;padding:28px 5px}.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.tip{background:#0d1526;border-radius:15px;padding:15px}.tip b{display:block;margin-bottom:5px}.tip span{font-size:13px;color:#9eabc1}
+footer{text-align:center;color:#6f7d95;font-size:13px;padding:15px 0 35px}
+@media(max-width:650px){.hero{padding-top:28px}.card{padding:16px;border-radius:18px}.tips{grid-template-columns:1fr}.row .btn{flex:1}.result-head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<main class="container">
+<section class="hero">
+  <div class="logo"><span>▶</span> TagGenius</div>
+  <h1>YouTube Tags Generator</h1>
+  <p>Generate relevant tags for your YouTube videos in seconds.</p>
+</section>
+
+<section class="card">
+  <label for="topic">Video title or topic</label>
+  <input id="topic" class="input" maxlength="180" placeholder="e.g. How to grow on YouTube in 2026">
+  <div class="options">
+    <label><input type="checkbox" id="hash" checked> Add #hashtags</label>
+    <label><input type="checkbox" id="long" checked> Long-tail tags</label>
+  </div>
+  <div class="row">
+    <button class="btn primary" id="generate">Generate Tags</button>
+    <button class="btn secondary" id="clear">Clear</button>
+  </div>
+</section>
+
+<section class="card">
+  <div class="result-head">
+    <h2>Generated Tags</h2>
+    <span class="count" id="count">0 tags</span>
+  </div>
+  <div id="tags" class="tags"><div class="empty">Enter a topic and tap “Generate Tags”.</div></div>
+  <div class="row">
+    <button class="btn secondary" id="copy">Copy All Tags</button>
+  </div>
+</section>
+
+<section class="card">
+  <h2 style="margin-top:0">Quick tips</h2>
+  <div class="tips">
+    <div class="tip"><b>🎯 Be specific</b><span>Use the exact topic of your video.</span></div>
+    <div class="tip"><b>🔑 Mix keywords</b><span>Combine broad and specific phrases.</span></div>
+    <div class="tip"><b>📋 Copy easily</b><span>Copy all generated tags with one tap.</span></div>
+  </div>
+</section>
+<footer>© 2026 TagGenius · Free YouTube tag helper</footer>
+</main>
+
+<script>
+const topic=document.getElementById('topic'), tagsBox=document.getElementById('tags'), count=document.getElementById('count');
+const hash=document.getElementById('hash'), long=document.getElementById('long');
+
+function clean(s){return s.toLowerCase().replace(/[^a-z0-9\\s]/gi,' ').replace(/\\s+/g,' ').trim()}
+function makeTags(text){
+  const base=clean(text), words=base.split(' ').filter(Boolean);
+  if(!base)return [];
+  const stop=new Set(['the','and','for','with','how','to','a','an','of','in','on','is','my','your','this','that','from']);
+  const core=[...new Set(words.filter(w=>w.length>2 && !stop.has(w)))];
+  const joined=core.join(' ');
+  let out=[
+    ...core,
+    joined,
+    `${joined} tutorial`,
+    `${joined} guide`,
+    `${joined} tips`,
+    `how to ${joined}`,
+    `${joined} 2026`,
+    `best ${joined}`,
+    `${joined} for beginners`,
+    `youtube ${joined}`,
+    `${joined} video`,
+    `${joined} shorts`,
+    `${joined} tips and tricks`
+  ];
+  if(long.checked){
+    out.push(`how to ${joined} step by step`, `${joined} complete guide 2026`, `${joined} beginner tutorial`);
+  }
+  out=[...new Set(out.map(x=>x.trim()).filter(x=>x && x.length<=45))];
+  return out.slice(0,30);
+}
+function render(arr){
+  count.textContent=arr.length+' tags';
+  if(!arr.length){tagsBox.innerHTML='<div class="empty">Enter a topic and tap “Generate Tags”.</div>';return}
+  tagsBox.innerHTML=arr.map(t=>`<span class="tag">${hash.checked?'#':''}${t.replaceAll(' ','_')}</span>`).join('');
+}
+document.getElementById('generate').onclick=()=>render(makeTags(topic.value));
+topic.addEventListener('keydown',e=>{if(e.key==='Enter')render(makeTags(topic.value))});
+document.getElementById('clear').onclick=()=>{topic.value='';render([]);topic.focus()};
+document.getElementById('copy').onclick=async()=>{
+  const arr=makeTags(topic.value);
+  if(!arr.length)return alert('Pehle topic enter karo.');
+  const text=arr.map(t=>hash.checked?'#'+t.replaceAll(' ','_'):t).join(', ');
+  try{await navigator.clipboard.writeText(text);alert('Tags copied!')}catch(e){alert(text)}
+};
+</script>
+</body>
+</html>
