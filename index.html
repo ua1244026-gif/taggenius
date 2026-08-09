@@ -497,5 +497,8 @@ generateTags();
 
 </script>
 
+  <!-- AI Tags -->
+
+<div style="margin:30px 20px;padding:20px;background:#f0f0f0;border-radius:10px"><h2>🤖 AI Tags</h2><input type="text" id="videoTopic" placeholder="Topic likho..." style="width:100%;padding:10px;margin:10px 0;border:2px solid #ddd;border-radius:5px"><button onclick="generateAITags()" style="width:100%;padding:12px;background:#007bff;color:white;border:none;border-radius:5px;cursor:pointer">✨ Generate</button><div id="aiResult" style="display:none"><pre id="aiTags" style="background:#fff;padding:10px"></pre><button onclick="copyAITags()" style="padding:10px;background:#28a745;color:white;border:none;border-radius:5px">📋 Copy</button></div></div><script>async function generateAITags(){const topic=document.getElementById('videoTopic').value;if(!topic){alert('Topic likho');return}try{const response=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer sk-proj-YOUR_GROQ_API_KEY_HERE','Content-Type':'application/json'},body:JSON.stringify({model:'mixtral-8x7b-32768',messages:[{role:'user',content:`Generate 20 YouTube tags for: "${topic}". Format: tag1, tag2, tag3...`}],max_tokens:200})});const data=await response.json();if(data.choices?.[0]?.message?.content){document.getElementById('aiTags').textContent=data.choices[0].message.content;document.getElementById('aiResult').style.display='block'}}catch(error){alert('Error: '+error.message)}}function copyAITags(){navigator.clipboard.writeText(document.getElementById('aiTags').textContent);alert('✅ Copied!')}</script>
 </body>
 </html>
