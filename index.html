@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="TagGenius - Free YouTube Tags Generator">
+<title>TagGenius - YouTube Tags Generator</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#0b1020;
+  color:#fff;
+  min-height:100vh;
+}
+
+.container{
+  width:92%;
+  max-width:900px;
+  margin:auto;
+}
+
+.hero{
+  text-align:center;
+  padding:40px 0 25px;
+}
+
+.logo{
+  font-size:25px;
+  font-weight:bold;
+}
+
+.logo span{
+  background:#ff1744;
+  padding:8px 12px;
+  border-radius:12px;
+}
+
+h1{
+  font-size:clamp(30px,7vw,52px);
+  margin:25px 0 10px;
+}
+
+.hero p{
+  color:#aab4c8;
+  font-size:17px;
+}
+
+.card{
+  background:#121a2d;
+  border:1px solid #26334d;
+  border-radius:20px;
+  padding:20px;
+  margin:20px 0;
+}
+
+label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.input{
+  width:100%;
+  background:#0c1323;
+  border:1px solid #34415c;
+  color:white;
+  border-radius:13px;
+  padding:15px;
+  font-size:16px;
+  outline:none;
+}
+
+.input:focus{
+  border-color:#ff1744;
+}
+
+.options{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-top:14px;
+  color:#b9c4d8;
+  font-size:14px;
+}
+
+.options label{
+  font-weight:normal;
+}
+
+.options input{
+  accent-color:#ff1744;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+.btn{
+  border:0;
+  border-radius:13px;
+  padding:13px 18px;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.primary{
+  background:#ff1744;
+  color:white;
+}
+
+.secondary{
+  background:#26334d;
+  color:white;
+}
+
+.result-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.result-head h2{
+  margin:0;
+}
+
+.count{
+  color:#9eabc1;
+  font-size:13px;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:18px;
+}
+
+.tag{
+  background:#202b43;
+  border:1px solid #33415d;
+  border-radius:50px;
+  padding:9px 12px;
+  color:#e7edf8;
+  font-size:14px;
+}
+
+.empty{
+  color:#8491a8;
+  text-align:center;
+  padding:25px;
+  width:100%;
+}
+
+.tips{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.tip{
+  background:#0d1526;
+  border-radius:15px;
+  padding:15px;
+}
+
+.tip b{
+  display:block;
+  margin-bottom:6px;
+}
+
+.tip span{
+  color:#9eabc1;
+  font-size:13px;
+}
+
+footer{
+  text-align:center;
+  color:#6f7d95;
+  font-size:13px;
+  padding:15px 0 35px;
+}
+
+@media(max-width:650px){
+  .tips{
+    grid-template-columns:1fr;
+  }
+
+  .row .btn{
+    flex:1;
+  }
+
+  .result-head{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:5px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="hero">
+  <div class="logo"><span>▶</span> TagGenius</div>
+
+  <h1>YouTube Tags Generator</h1>
+
+  <p>
+    Generate relevant tags for your YouTube videos in seconds.
+  </p>
+</section>
+
+<section class="card">
+
+<label for="topic">Video title or topic</label>
+
+<input
+  id="topic"
+  class="input"
+  maxlength="180"
+  placeholder="e.g. How to grow on YouTube in 2026"
+>
+
+<div class="options">
+
+<label>
+<input type="checkbox" id="hash" checked>
+Add #hashtags
+</label>
+
+<label>
+<input type="checkbox" id="long" checked>
+Long-tail tags
+</label>
+
+</div>
+
+<div class="row">
+
+<button class="btn primary" onclick="generateTags()">
+Generate Tags
+</button>
+
+<button class="btn secondary" onclick="clearAll()">
+Clear
+</button>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<div class="result-head">
+
+<h2>Generated Tags</h2>
+
+<span class="count" id="count">
+0 tags
+</span>
+
+</div>
+
+<div id="tags" class="tags">
+
+<div class="empty">
+Enter a topic and tap "Generate Tags".
+</div>
+
+</div>
+
+<div class="row">
+
+<button class="btn secondary" onclick="copyTags()">
+Copy All Tags
+</button>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>Quick Tips</h2>
+
+<div class="tips">
+
+<div class="tip">
+<b>🎯 Be specific</b>
+<span>Use the exact topic of your video.</span>
+</div>
+
+<div class="tip">
+<b>🔑 Mix keywords</b>
+<span>Combine broad and specific phrases.</span>
+</div>
+
+<div class="tip">
+<b>📋 Copy easily</b>
+<span>Copy all generated tags with one tap.</span>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+© 2026 TagGenius · Free YouTube Tag Generator
+</footer>
+
+</div>
+
+<script>
+
+function cleanText(text){
+
+return text
+.toLowerCase()
+.replace(/[^a-z0-9\s]/gi," ")
+.replace(/\s+/g," ")
+.trim();
+
+}
+
+function createTags(text){
+
+let base=cleanText(text);
+
+if(!base) return [];
+
+let words=base.split(" ").filter(Boolean);
+
+let stopWords=new Set([
+"the","and","for","with","how","to","a",
+"an","of","in","on","is","my","your",
+"this","that","from"
+]);
+
+let core=[...new Set(
+words.filter(word =>
+word.length>2 && !stopWords.has(word)
+)
+)];
+
+if(core.length===0) return [];
+
+let joined=core.join(" ");
+
+let tags=[
+
+...core,
+
+joined,
+
+joined+" tutorial",
+
+joined+" guide",
+
+joined+" tips",
+
+"how to "+joined,
+
+joined+" 2026",
+
+"best "+joined,
+
+joined+" for beginners",
+
+"youtube "+joined,
+
+joined+" video",
+
+joined+" shorts",
+
+joined+" tips and tricks"
+
+];
+
+if(document.getElementById("long").checked){
+
+tags.push(
+"how to "+joined+" step by step",
+joined+" complete guide 2026",
+joined+" beginner tutorial"
+);
+
+}
+
+return [...new Set(tags)]
+.filter(tag => tag.length <= 45)
+.slice(0,30);
+
+}
+
+function generateTags(){
+
+let topic=document.getElementById("topic").value;
+
+let tags=createTags(topic);
+
+let box=document.getElementById("tags");
+
+document.getElementById("count").innerText=
+tags.length+" tags";
+
+if(tags.length===0){
+
+box.innerHTML=
+'<div class="empty">Please enter a video topic first.</div>';
+
+return;
+
+}
+
+let useHash=document.getElementById("hash").checked;
+
+box.innerHTML=tags.map(tag=>{
+
+let display=tag.replaceAll(" ","_");
+
+if(useHash) display="#"+display;
+
+return '<span class="tag">'+display+'</span>';
+
+}).join("");
+
+}
+
+async function copyTags(){
+
+let topic=document.getElementById("topic").value;
+
+let tags=createTags(topic);
+
+if(tags.length===0){
+
+alert("Pehle video topic enter karo.");
+
+return;
+
+}
+
+let useHash=document.getElementById("hash").checked;
+
+let text=tags.map(tag=>{
+
+let value=tag.replaceAll(" ","_");
+
+return useHash ? "#"+value : value;
+
+}).join(", ");
+
+try{
+
+await navigator.clipboard.writeText(text);
+
+alert("Tags copied successfully! ✅");
+
+}catch(error){
+
+alert(text);
+
+}
+
+}
+
+function clearAll(){
+
+document.getElementById("topic").value="";
+
+document.getElementById("tags").innerHTML=
+'<div class="empty">Enter a topic and tap "Generate Tags".</div>';
+
+document.getElementById("count").innerText="0 tags";
+
+}
+
+document.getElementById("topic").addEventListener(
+"keydown",
+function(event){
+
+if(event.key==="Enter"){
+generateTags();
+}
+
+});
+
+</script>
+
+</body>
+</html>
